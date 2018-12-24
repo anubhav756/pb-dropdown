@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import InputFields from './constants/inputFields';
 import PBInput from './components/PBInput';
 import PBAutocomplete from './components/PBAutocomplete';
+import PBTnC from './components/PBTnC';
 
 class App extends Component {
     constructor(props) {
@@ -50,6 +51,7 @@ class App extends Component {
         const FieldsMap = {
             PBInput,
             PBAutocomplete,
+            PBTnC,
         };
 
         return (
