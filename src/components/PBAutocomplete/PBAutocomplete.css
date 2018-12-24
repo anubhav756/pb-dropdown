@@ -1,0 +1,22 @@
+.pb-autocomplete {
+    position: relative;
+    display: inline-block;
+}
+.pb-autocomplete .pb-autocomplete-dropdown {
+    position: absolute;
+    background: white;
+    width: 100%;
+    outline:1px solid #ddd;
+}
+.pb-autocomplete .pb-autocomplete-dropdown button {
+    display: block;
+    padding: 0;
+    width: 100%;
+    background: none;
+    border: none; 
+    cursor: pointer;
+    text-align: left;
+}
+.pb-autocomplete .pb-autocomplete-dropdown button:hover {
+    background-color: #ddd;
+}

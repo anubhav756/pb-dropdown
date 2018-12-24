@@ -1,0 +1,36 @@
+export default  [
+    {
+        min:4,
+        max:10,
+        name: "fname",
+        hint:"Please enter your name as per your PAN card",
+        placeholder:"Fill in your first name",
+        defaultValue:"",
+        label:"First Name",
+        disabled:false,
+        required:true,
+        regex:/^[a-z]+$/i,
+        component: 'PBInput',
+    },
+    {
+        min:4,
+        max:10,
+        name: "lname",
+        hint:"Please enter your name as per your PAN card",
+        placeholder:"Fill in your last name",
+        defaultValue:"",
+        label:"Last Name",
+        disabled:false,
+        required:true,
+        regex:/^[a-z]+$/i,
+        component: 'PBInput',
+    },
+    {
+        name: 'companyName',
+        label: 'Company Name',
+        required: true,
+        placeholder:"Search employer's name",
+        disabled: false,
+        component: 'PBAutocomplete',
+    }
+]
