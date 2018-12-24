@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import PBAutocompleteDropdown from './PBAutocompleteDropdown';
 import './PBAutocomplete.css';
 
-const filterOptions = (value, options) =>
-    options.filter(o => o.label.toLowerCase().indexOf(value.label.toLowerCase()) > -1)
+const filterOptions = (value, options, filterType) =>
+    options.filter(o => o.label.toLowerCase()[filterType](value.label.toLowerCase()))
 
 class PBAutocomplete extends Component {
     constructor(props) {
@@ -127,6 +127,7 @@ class PBAutocomplete extends Component {
             required,
             hint,
             disabled,
+            filterType,
         } = this.props;
         const {
             value,
@@ -158,7 +159,7 @@ class PBAutocomplete extends Component {
                     <PBAutocompleteDropdown
                         isOpen={isOpen}
                         isFetching={isFetching}
-                        options={filterOptions(value, options)}
+                        options={filterOptions(value, options, filterType)}
                         onSelect={this.handleSelect}
                     />
                 </div>
@@ -180,11 +181,13 @@ PBAutocomplete.propTypes = {
     isSubmitted  : PropTypes.bool.isRequired,
     defaultValue : PropTypes.object,
     required     : PropTypes.bool,
+    filterType   : PropTypes.oneOf(['includes', 'startsWith', 'endsWith']),
 };
 
 PBAutocomplete.defaultProps = {
     required     : false,
     defaultValue : null,
-}
+    filterType   : 'includes',
+};
 
 export default PBAutocomplete;

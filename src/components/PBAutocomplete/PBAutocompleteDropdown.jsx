@@ -25,6 +25,6 @@ PBAutocompleteDropdown.propTypes = {
     onSelect   : PropTypes.func.isRequired,
     isOpen     : PropTypes.bool.isRequired,
     isFetching : PropTypes.bool.isRequired,
-}
+};
 
 export default PBAutocompleteDropdown;
