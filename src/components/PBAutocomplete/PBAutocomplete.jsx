@@ -43,10 +43,14 @@ class PBAutocomplete extends Component {
     }
     clickListener(e) {
         const { name } = this.props;
+        const { isOpen } = this.state;
         const currentElement = document.getElementById(`pb-autocomplete-${name}`);
 
         if (!currentElement.contains(e.target)) {
-            this.toggleDropdown(false);
+            if (isOpen) {
+                this.onBlur();
+                this.toggleDropdown(false);
+            }
         } else {
             this.toggleDropdown(true);
         }
@@ -119,7 +123,6 @@ class PBAutocomplete extends Component {
                         name={name}
                         value={value && value.label ? value.label : ''}
                         onChange={this.onChange}
-                        onBlur={this.onBlur}
                         placeholder={placeholder}
                         autoComplete="off"
                         disabled={disabled || ''}
