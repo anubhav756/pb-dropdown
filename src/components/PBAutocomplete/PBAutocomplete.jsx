@@ -2,16 +2,21 @@ import React, { Component } from 'react';
 import PBAutocompleteDropdown from './PBAutocompleteDropdown';
 import './PBAutocomplete.css';
 
+const filterOptions = (value, options) =>
+    options.filter(o => o.label.toLowerCase().indexOf(value.label.toLowerCase()) > -1)
+
 class PBAutocomplete extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             value: props.defaultValue || '',
+            options: [],
             error: false,
             errorMsg: '',
             showError: false,
             isOpen: false,
+            isFetching: false,
         };
 
         this.onChange = this.onChange.bind(this);
@@ -56,9 +61,28 @@ class PBAutocomplete extends Component {
         }
     }
     onChange(e) {
+        const { fetchOptions } = this.props;
+        const { options } = this.state;
         const value = { value: -1, label: e.target.value };
+        const fetchResponse = fetchOptions(e.target.value, options);
 
-        this.setState({ value }, () => this.validate());
+        if (fetchResponse.then) {
+            this.setState({
+                value,
+                isFetching: true
+            }, () => this.validate());
+            fetchResponse.then(options => this.setState({
+                isFetching: false,
+                options,
+            }));
+        } else {
+            this.setState({
+                value,
+                isFetching: false,
+                options: fetchResponse,
+            }, () => this.validate());
+        }
+
     }
     validate(callback) {
         const { required } = this.props;
@@ -90,6 +114,7 @@ class PBAutocomplete extends Component {
         this.setState({ isOpen });
     }
     handleSelect(value) {
+        this.onBlur();
         this.toggleDropdown(false);
         this.setState({ value }, () => this.validate());
     }
@@ -106,8 +131,10 @@ class PBAutocomplete extends Component {
             value,
             error,
             isOpen,
+            options,
             errorMsg,
             showError,
+            isFetching,
         } = this.state;
 
         return (
@@ -129,12 +156,8 @@ class PBAutocomplete extends Component {
                     />
                     <PBAutocompleteDropdown
                         isOpen={isOpen}
-                        isFetching={false}
-                        options={[
-                            { value: 1, label: 'Google' },
-                            { value: 2, label: 'Gooo' },
-                            { value: 3, label: 'Goog' },
-                        ]}
+                        isFetching={isFetching}
+                        options={filterOptions(value, options)}
                         onSelect={this.handleSelect}
                     />
                 </div>

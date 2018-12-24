@@ -32,5 +32,13 @@ export default  [
         placeholder:"Search employer's name",
         disabled: false,
         component: 'PBAutocomplete',
+        fetchOptions: (keyword, options) =>
+            options && options.length ?
+                options :
+                new Promise(resolve => setTimeout(() => resolve([
+                    { value: 1, label: 'Google' },
+                    { value: 2, label: 'Gooo' },
+                    { value: 3, label: 'Gaaoo' },
+                ]), 1000))
     }
 ]
