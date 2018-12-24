@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import PBAutocompleteDropdown from './PBAutocompleteDropdown';
 import './PBAutocomplete.css';
 
@@ -170,6 +171,20 @@ class PBAutocomplete extends Component {
             </div>
         );
     }
+}
+
+PBAutocomplete.propTypes = {
+    name         : PropTypes.string.isRequired,
+    onUpdate     : PropTypes.func.isRequired,
+    fetchOptions : PropTypes.func.isRequired,
+    isSubmitted  : PropTypes.bool.isRequired,
+    defaultValue : PropTypes.object,
+    required     : PropTypes.bool,
+};
+
+PBAutocomplete.defaultProps = {
+    required     : false,
+    defaultValue : null,
 }
 
 export default PBAutocomplete;
