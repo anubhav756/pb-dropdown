@@ -10,22 +10,29 @@ class PBAutocomplete extends Component {
             value: props.defaultValue || '',
             error: false,
             errorMsg: '',
-            showError: true,
+            showError: false,
+            isOpen: false,
         };
 
         this.onChange = this.onChange.bind(this);
         this.onBlur = this.onBlur.bind(this);
         this.validate = this.validate.bind(this);
+        this.clickListener = this.clickListener.bind(this);
+        this.handleSelect = this.handleSelect.bind(this);
     }
     componentWillMount() {
         const { defaultValue, onUpdate } = this.props;
         const { value, error } = this.state;
 
-        if (!defaultValue) {
-            this.setState({ showError: false });
+        if (defaultValue) {
+            this.setState({ showError: true });
         }
 
         this.validate(() => onUpdate && onUpdate(value, error));
+        document.addEventListener('click', this.clickListener);
+    }
+    componentWillUnmount() {
+        document.removeEventListener('click', this.clickListener);
     }
     componentDidUpdate({ isSubmitted: prevIsSubmitted }) {
         const { isSubmitted } = this.props;
@@ -34,18 +41,26 @@ class PBAutocomplete extends Component {
             this.setState({ showError: true });
         }
     }
+    clickListener(e) {
+        const { name } = this.props;
+        const currentElement = document.getElementById(`pb-autocomplete-${name}`);
+
+        if (!currentElement.contains(e.target)) {
+            this.toggleDropdown(false);
+        } else {
+            this.toggleDropdown(true);
+        }
+    }
     onChange(e) {
-        const { max } = this.props;
+        const value = { value: -1, label: e.target.value };
 
-        if (max && e.target.value.length > max) return;
-
-        this.setState({ value: e.target.value }, () => this.validate());
+        this.setState({ value }, () => this.validate());
     }
     validate(callback) {
         const { required } = this.props;
         const { value } = this.state;
 
-        if (required && !value.length) {
+        if (required && !value.label) {
             this.setState({
                 error: true,
                 errorMsg: 'This field is required',
@@ -67,6 +82,13 @@ class PBAutocomplete extends Component {
             onUpdate(value, error);
         }
     }
+    toggleDropdown(isOpen) {
+        this.setState({ isOpen });
+    }
+    handleSelect(value) {
+        this.toggleDropdown(false);
+        this.setState({ value }, () => this.validate());
+    }
     render() {
         const {
             name,
@@ -79,6 +101,7 @@ class PBAutocomplete extends Component {
         const {
             value,
             error,
+            isOpen,
             errorMsg,
             showError,
         } = this.state;
@@ -86,12 +109,15 @@ class PBAutocomplete extends Component {
         return (
             <div>
                 <label>{label}{required ? '*': '' }</label>
-                <div className="pb-autocomplete">
+                <div
+                    id={`pb-autocomplete-${name}`}
+                    className="pb-autocomplete"
+                >
                     <input
                         type="text"
                         className="pb-autocomplete-input"
                         name={name}
-                        value={value}
+                        value={value && value.label ? value.label : ''}
                         onChange={this.onChange}
                         onBlur={this.onBlur}
                         placeholder={placeholder}
@@ -99,14 +125,14 @@ class PBAutocomplete extends Component {
                         disabled={disabled || ''}
                     />
                     <PBAutocompleteDropdown
-                        isOpen
+                        isOpen={isOpen}
                         isFetching={false}
                         options={[
                             { value: 1, label: 'Google' },
                             { value: 2, label: 'Gooo' },
                             { value: 3, label: 'Goog' },
                         ]}
-                        onSelect={(...v) => console.log('--->', v)}
+                        onSelect={this.handleSelect}
                     />
                 </div>
                 <div>{hint ? hint : ""}</div>
