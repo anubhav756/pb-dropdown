@@ -44,7 +44,7 @@ class App extends Component {
         this.setState({ isSubmitted: true });
 
         if (isFormValid) {
-            console.log(formValues);
+            console.log('Submit:', formValues);
         }
     }
     render() {

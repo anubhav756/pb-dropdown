@@ -11,13 +11,13 @@ class PBAutocomplete extends Component {
         super(props);
 
         this.state = {
-            value: props.defaultValue || '',
-            options: [],
-            error: false,
-            errorMsg: '',
-            showError: false,
-            isOpen: false,
-            isFetching: false,
+            value      : props.defaultValue || '',
+            options    : [],
+            error      : false,
+            errorMsg   : '',
+            showError  : false,
+            isOpen     : false,
+            isFetching : false,
         };
 
         this.onChange = this.onChange.bind(this);
@@ -27,15 +27,21 @@ class PBAutocomplete extends Component {
         this.handleSelect = this.handleSelect.bind(this);
     }
     componentWillMount() {
-        const { defaultValue, onUpdate } = this.props;
-        const { value, error } = this.state;
+        const { defaultValue } = this.props;
 
         if (defaultValue) {
             this.setState({ showError: true });
         }
 
-        this.validate(() => onUpdate && onUpdate(value, error));
-        document.addEventListener('click', this.clickListener);
+        this.validate(() => {
+            const { onUpdate } = this.props;
+            const { value, error } = this.state;
+
+            if (onUpdate) {
+                onUpdate(value, error)
+            }
+            document.addEventListener('click', this.clickListener);
+        });
     }
     componentWillUnmount() {
         document.removeEventListener('click', this.clickListener);
@@ -72,15 +78,21 @@ class PBAutocomplete extends Component {
                 value,
                 isFetching: true
             }, () => this.validate());
-            fetchResponse.then(options => this.setState({
-                isFetching: false,
-                options,
-            }));
+            fetchResponse.then((fetchedOptions) => {
+                const { isFetching } = this.state;
+
+                if (isFetching) {
+                    this.setState({
+                        isFetching : false,
+                        options    : fetchedOptions,
+                    });
+                }
+            });
         } else {
             this.setState({
                 value,
-                isFetching: false,
-                options: fetchResponse,
+                isFetching : false,
+                options    : fetchResponse,
             }, () => this.validate());
         }
 
@@ -91,13 +103,13 @@ class PBAutocomplete extends Component {
 
         if (required && !value.label) {
             this.setState({
-                error: true,
-                errorMsg: 'This field is required',
+                error    : true,
+                errorMsg : 'This field is required',
             }, callback);
         } else {
             this.setState({
-                error: false,
-                errorMsg: '',
+                error    : false,
+                errorMsg : '',
             }, callback);
         }
     }

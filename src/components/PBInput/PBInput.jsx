@@ -16,14 +16,20 @@ class PBInput extends Component {
         this.validate = this.validate.bind(this);
     }
     componentWillMount() {
-        const { defaultValue, onUpdate } = this.props;
-        const { value, error } = this.state;
+        const { defaultValue } = this.props;
 
         if (!defaultValue) {
             this.setState({ showError: false });
         }
 
-        this.validate(() => onUpdate && onUpdate(value, error));
+        this.validate(() => {
+            const { onUpdate } = this.props;
+            const { value, error } = this.state;
+
+            if (onUpdate) {
+                onUpdate(value, error)
+            }
+        });
     }
     componentDidUpdate({ isSubmitted: prevIsSubmitted }) {
         const { isSubmitted } = this.props;
