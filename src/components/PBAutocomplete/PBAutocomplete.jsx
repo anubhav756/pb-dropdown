@@ -139,6 +139,7 @@ class PBAutocomplete extends Component {
             required,
             hint,
             disabled,
+            maxItems,
             filterType,
         } = this.props;
         const {
@@ -171,7 +172,7 @@ class PBAutocomplete extends Component {
                     <PBAutocompleteDropdown
                         isOpen={isOpen}
                         isFetching={isFetching}
-                        options={filterOptions(value, options, filterType)}
+                        options={filterOptions(value, options, filterType).slice(0, maxItems)}
                         onSelect={this.handleSelect}
                     />
                 </div>
@@ -193,12 +194,14 @@ PBAutocomplete.propTypes = {
     isSubmitted  : PropTypes.bool.isRequired,
     defaultValue : PropTypes.object,
     required     : PropTypes.bool,
+    maxItems     : PropTypes.number.isRequired,
     filterType   : PropTypes.oneOf(['includes', 'startsWith', 'endsWith']),
 };
 
 PBAutocomplete.defaultProps = {
     required     : false,
     defaultValue : null,
+    maxItems     : 10,
     filterType   : 'includes',
 };
 
